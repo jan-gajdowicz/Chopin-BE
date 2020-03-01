@@ -1,58 +1,28 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const graphqlHttps = require('express-graphql')
-const { buildSchema } = require('graphql')
+const mongoose = require('mongoose')
+
+const isAuth = require('./middleware/is-auth')
+const graphqlSchema = require('./graphql/schema/index')
+const graphqlResolvers = require('./graphql/resolvers/index')
 
 const app = express()
 
 app.use(bodyParser.json())
 
-const products = []
+app.use(isAuth)
 
 app.use('/graphql', graphqlHttps({
-  schema: buildSchema(`
-    type Product {
-      _id: ID!
-      name: String!
-      description: String!
-      price: Float!
-    }
-    
-    input ProductInput {
-      name: String!
-      description: String!
-      price: Float!
-    }
-
-    type RootQuery {
-      products: [Product!]!
-    }
-
-    type RootMutation {
-      createProduct(productInput: ProductInput): Product
-    }
-
-    schema {
-      query: RootQuery 
-      mutation: RootMutation
-    }
-  `),
-  rootValue: {
-    products: () => {
-      return products
-    },
-    createProduct: ({ productInput: { name, description, price } }) => {
-      const product = {
-        _id: Math.random().toString(),
-        name,
-        description,
-        price: +price
-      }
-      products.push(product)
-      return product
-    }
-  },
+  schema: graphqlSchema,
+  rootValue: graphqlResolvers,
   graphiql: true
 }))
 
-app.listen(3000)
+mongoose
+  .connect(
+    `mongodb://127.0.0.1:27017/chopin`,
+    { useNewUrlParser: true, useUnifiedTopology: true },
+  )
+  .then(app.listen(3000))
+  .catch(error => console.error('Connection error', error.message))
