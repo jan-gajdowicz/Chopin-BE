@@ -11,8 +11,6 @@ const app = express()
 
 app.use(bodyParser.json())
 
-app.use(isAuth)
-
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS')
@@ -22,6 +20,8 @@ app.use((req, res, next) => {
   }
   next()
 })
+
+app.use(isAuth)
 
 app.use('/graphql', graphqlHttps({
   schema: graphqlSchema,
