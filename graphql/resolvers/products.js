@@ -49,9 +49,8 @@ module.exports = {
       if (!creator) {
         throw new Error('User not found')
       }
-
       creator.createdProducts.push(product)
-      await creator.user.save()
+      await creator.save()
 
       return createdProduct
     }
