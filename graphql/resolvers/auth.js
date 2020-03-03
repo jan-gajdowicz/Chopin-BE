@@ -11,13 +11,13 @@ module.exports = {
         throw new Error('User already exists')
       }
 
-      const hashedPassword = bcrypt.hash(password, 12)
+      const hashedPassword = await bcrypt.hash(password, 12)
       const user = new User({
         email,
         password: hashedPassword
       })
 
-      const result = user.save()
+      const result = await user.save()
       return { ...result._doc, password: null }
     }
     catch (error) {

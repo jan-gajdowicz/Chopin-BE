@@ -1,4 +1,5 @@
 const Product = require('../../models/product')
+const User = require('../../models/user')
 const { findUser } = require('./finders')
 
 const transformProduct = product => {
@@ -58,4 +59,35 @@ module.exports = {
       throw error
     }
   },
+  updateProduct: async ({ productUpdateInput: { _id, name, description, price } }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Unauthenticated')
+    }
+    try {
+      const product = await Product.findById(_id)
+      product.name = name
+      product.description = description
+      product.price = price
+
+      await product.save()
+
+      return product
+    }
+    catch (error) {
+      throw error
+    }
+  },
+  deleteProduct: async ({ productId }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Unauthenticated')
+    }
+    try {
+      const product = await Product.findById(productId)
+      await product.deleteOne({ _id: productId })
+      return product
+    }
+    catch (error) {
+      throw error
+    }
+  }
 }

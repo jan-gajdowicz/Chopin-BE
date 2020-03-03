@@ -11,6 +11,16 @@ const app = express()
 
 app.use(bodyParser.json())
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorisation')
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200)
+  }
+  next()
+})
+
 app.use(isAuth)
 
 app.use('/graphql', graphqlHttps({
@@ -24,5 +34,5 @@ mongoose
     `mongodb://127.0.0.1:27017/chopin`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   )
-  .then(app.listen(3000))
+  .then(app.listen(4000))
   .catch(error => console.error('Connection error', error.message))

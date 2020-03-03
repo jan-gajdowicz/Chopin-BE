@@ -36,6 +36,13 @@ module.exports = buildSchema(`
     price: Float!
   }
 
+  input ProductUpdateInput {
+    _id: ID!
+    name: String!
+    description: String!
+    price: Float!
+  }
+
   input UserInput {
     email: String!
     password: String!
@@ -53,7 +60,9 @@ module.exports = buildSchema(`
   }
 
   type RootMutation {
+    updateProduct(productUpdateInput: ProductUpdateInput): Product
     createProduct(productInput: ProductInput): Product
+    deleteProduct(productId: ID!): Product
     createUser(userInput: UserInput): User
     placeOrder(orderInput: OrderInput): Order 
     cancelOrder(orderId: ID!): Order  
