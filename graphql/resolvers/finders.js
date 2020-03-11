@@ -5,7 +5,11 @@ const findProducts = async productIds => {
   try {
     const products = await Product.find({ _id: { $in: productIds } })
     return products.map(product => {
-      return transformProduct(product)
+      return {
+        ...product._doc,
+        _id: product.id,
+        creator: findUser.bind(this, product._doc.creator)
+      }
     })
   }
   catch (error) {
@@ -16,7 +20,11 @@ const findProducts = async productIds => {
 const findSingleProduct = async productId => {
   try {
     const product = await Product.findById(productId)
-    return transformProduct(product)
+    return {
+      ...product._doc,
+      _id: product.id,
+      creator: findUser.bind(this, product._doc.creator)
+    }
   }
   catch (error) {
     throw error
@@ -28,8 +36,6 @@ const findUser = async userId => {
     const user = await User.findById(userId)
     return {
       ...user._doc,
-      _id: user._id,
-      createdProducts: findProducts.bind(this, user._doc.createdProducts)
     }
   }
   catch (err) {

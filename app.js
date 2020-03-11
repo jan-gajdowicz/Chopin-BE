@@ -34,5 +34,5 @@ mongoose
     `mongodb://127.0.0.1:27017/chopin`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   )
-  .then(app.listen(4000))
+  .then(app.listen(5555))
   .catch(error => console.error('Connection error', error.message))

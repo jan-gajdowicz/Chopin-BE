@@ -3,6 +3,24 @@ const jwt = require('jsonwebtoken')
 const User = require('../../models/user')
 
 module.exports = {
+  users: async () => {
+    try {
+      const users = await User.find()
+      return users
+    }
+    catch (error) {
+      throw error
+    }
+  },
+  user: async ({ userId }) => {
+    try {
+      const user = await User.findById(userId)
+      return user
+    }
+    catch (error) {
+      throw error
+    }
+  },
   createUser: async ({ userInput: { email, password } }) => {
     try {
       const existingUser = await User.findOne({ email })
@@ -19,6 +37,35 @@ module.exports = {
 
       const result = await user.save()
       return { ...result._doc, password: null }
+    }
+    catch (error) {
+      throw error
+    }
+  },
+  updateUser: async ({ userUpdateInput: { _id, email } }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Unauthenticated')
+    }
+    try {
+      const user = await User.findById(_id)
+      user.email = email
+
+      await user.save()
+
+      return user
+    }
+    catch (error) {
+      throw error
+    }
+  },
+  deleteUser: async ({ userId }, req) => {
+    if (!req.isAuth) {
+      throw new Error('Unauthenticated')
+    }
+    try {
+      const user = await User.findById(userId)
+      await user.deleteOne({ _id: userId })
+      return user
     }
     catch (error) {
       throw error

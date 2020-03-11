@@ -1,1 +1,1 @@
-exports.dateToString = date => new Date(date).toString();
+exports.dateToString = date => new Date(date).toISOString();

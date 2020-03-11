@@ -22,6 +22,15 @@ module.exports = {
       throw error
     }
   },
+  product: async ({ productId }) => {
+    try {
+      const product = await Product.findById(productId)
+      return transformProduct(product)
+    }
+    catch (error) {
+      throw error
+    }
+  },
   createProduct: async ({ productInput: { name, description, price } }, req) => {
     if (!req.isAuth) {
       throw new Error('Unauthenticated')
