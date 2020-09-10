@@ -31,8 +31,11 @@ app.use('/graphql', graphqlHttps({
 
 mongoose
   .connect(
-    `mongodb://127.0.0.1:27017/chopin`,
+    `mongodb+srv://dbAdmin:L1nI3q1Cxn31lUvP@cluster0.ddjtr.mongodb.net/Chopin?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true },
   )
-  .then(app.listen(5555))
+  .then(() => {
+    console.log('listen')
+    app.listen(5555)
+  })
   .catch(error => console.error('Connection error', error.message))

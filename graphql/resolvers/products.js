@@ -3,6 +3,7 @@ const User = require('../../models/user')
 const { findUser } = require('./finders')
 
 const transformProduct = product => {
+  console.log(product, 'product')
   return {
     ...product._doc,
     _id: product.id,
