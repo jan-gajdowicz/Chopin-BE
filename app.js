@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const graphqlHttps = require('express-graphql')
 const mongoose = require('mongoose')
+require('dotenv').config({ path: `.env.${process.env.NODE_ENV}` })
+
+console.log(process.env.NODE_ENV, '')
 
 const isAuth = require('./middleware/is-auth')
 const graphqlSchema = require('./graphql/schema/index')
@@ -29,10 +32,15 @@ app.use('/graphql', graphqlHttps({
   graphiql: true
 }))
 
+const port = 5555
+
 mongoose
   .connect(
-    `mongodb://127.0.0.1:27017/chopin`,
+    process.env.CONNECTION_STRING,
     { useNewUrlParser: true, useUnifiedTopology: true },
   )
-  .then(app.listen(5555))
+  .then(() => {
+    app.listen(port)
+    console.log(`Listening on ${port}`)
+  })
   .catch(error => console.error('Connection error', error.message))
